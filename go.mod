@@ -1,4 +1,4 @@
-module github.com/jwt-auth-handler
+module github.com/toky03/jwt-auth-handler
 
 go 1.12
 
