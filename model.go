@@ -1,11 +1,15 @@
 package jwtauthhandler
 
+import "github.com/dgrijalva/jwt-go"
+
+// JwtHandler defines struct which acts as service
 type JwtHandler struct {
-	OpenIdProviderEndpoint string
+	OpenIDProviderEndpoint string
+	ParseFunc              func(string, jwt.Keyfunc) (*jwt.Token, error)
 }
 
 type jwks struct {
-	keys []key `json:"keys"`
+	Keys []key `json:"keys"`
 }
 
 type key struct {

@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// AuthMiddleware acts as Middleware which validates an Auth token by validating the signature with the public key from the jwks endpoint
 func (jwtHandler *JwtHandler) AuthMiddleware(next http.Handler) http.Handler {
 
 	if jwtHandler == nil {
@@ -16,21 +17,19 @@ func (jwtHandler *JwtHandler) AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := strings.Split(r.Header.Get("Authorization"), "Baerer ")
 		if len(authHeader) != 2 {
-			fmt.Println("Malformed token")
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Malformed Token"))
 		} else {
 			jwtToken := authHeader[1]
 			// TODO eventuell ParseWithClaims verwenden
 
-			rsaKeys := jwtHandler.ReadPublicKeys()
+			rsaKeys := jwtHandler.readPublicKeys()
 			var err error
-			for index, rsaKey := range rsaKeys {
-				token, errParse := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+			for _, rsaKey := range rsaKeys {
+				token, errParse := jwtHandler.ParseFunc(jwtToken, func(token *jwt.Token) (interface{}, error) {
 					if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
 						return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 					}
-					fmt.Printf("loop number %v \n", index)
 					return &rsaKey, nil
 				})
 				if token.Valid {

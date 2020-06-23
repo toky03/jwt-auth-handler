@@ -6,34 +6,38 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"log"
 	"math/big"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateJwtHandler(openIdProviderEndpoint string) (JwtHandler, error) {
-	if openIdProviderEndpoint == "" {
+// CreateJwtHandler initializes an new JwtHandler and exepts the endpoint of the openIDProvider
+func CreateJwtHandler(openIDProviderEndpoint string) (JwtHandler, error) {
+	if openIDProviderEndpoint == "" {
 		return JwtHandler{}, errors.New("Enpoint must be provided")
 	}
 	return JwtHandler{
-		OpenIdProviderEndpoint: openIdProviderEndpoint,
+		OpenIDProviderEndpoint: openIDProviderEndpoint,
+		ParseFunc:              jwt.Parse,
 	}, nil
 }
 
-func (jwtHandler *JwtHandler) ReadPublicKeys() []rsa.PublicKey {
+//
+func (jwtHandler *JwtHandler) readPublicKeys() []rsa.PublicKey {
 	jwks, err := jwtHandler.readJwks()
 	if err != nil {
 		log.Printf("could not read jwks: %v", err)
 	}
 
-	tokens := make([]rsa.PublicKey, 0, len(jwks.keys))
-	for _, token := range jwks.keys {
+	tokens := make([]rsa.PublicKey, 0, len(jwks.Keys))
+	for _, token := range jwks.Keys {
 		tokens = append(tokens, jwtHandler.createCert(token))
 	}
 	return tokens
 }
 
-func (jwtHanlder *JwtHandler) createCert(key key) rsa.PublicKey {
+func (jwtHandler *JwtHandler) createCert(key key) rsa.PublicKey {
 
 	decN, err := base64.RawURLEncoding.DecodeString(key.Nstr)
 	if err != nil {
@@ -50,13 +54,18 @@ func (jwtHanlder *JwtHandler) createCert(key key) rsa.PublicKey {
 	var buffer bytes.Buffer
 	buffer.WriteByte(0)
 	buffer.Write(decE)
-	exponent := binary.BigEndian.Uint32(buffer.Bytes())
+	var exponent int
+	if len(buffer.Bytes()) > 2 {
+		exponent = int(binary.BigEndian.Uint32(buffer.Bytes()))
+	} else {
+		exponent = int(binary.BigEndian.Uint16(buffer.Bytes()))
+	}
+
 	if err != nil {
 		log.Printf("could not read from decoded e: %v", err)
 	}
 
-	publicKey := rsa.PublicKey{N: n, E: int(exponent)}
-	fmt.Printf("Size of token is %v \n", publicKey.Size())
+	publicKey := rsa.PublicKey{N: n, E: exponent}
 	return publicKey
 
 }

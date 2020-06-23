@@ -8,9 +8,9 @@ import (
 
 func (jwtHanlder *JwtHandler) readJwks() (jwks, error) {
 
-	openIdProviderEndpoint := jwtHanlder.OpenIdProviderEndpoint + "/.well-known/jwks.json"
+	openIDProviderEndpoint := jwtHanlder.OpenIDProviderEndpoint + "/.well-known/jwks.json"
 
-	req, err := http.Get(openIdProviderEndpoint)
+	req, err := http.Get(openIDProviderEndpoint)
 
 	body, err := ioutil.ReadAll(req.Body)
 
