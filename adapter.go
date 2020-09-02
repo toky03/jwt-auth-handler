@@ -8,7 +8,7 @@ import (
 
 func (jwtHanlder *JwtHandler) readJwks() (jwks, error) {
 
-	openIDProviderEndpoint := jwtHanlder.OpenIDProviderEndpoint + "/.well-known/jwks.json"
+	openIDProviderEndpoint := jwtHanlder.OpenIDProviderEndpoint
 
 	req, err := http.Get(openIDProviderEndpoint)
 
