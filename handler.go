@@ -23,7 +23,7 @@ func (jwtHandler *JwtHandler) AuthMiddleware(next http.Handler) http.Handler {
 			jwtToken := authHeader[1]
 			// TODO eventuell ParseWithClaims verwenden
 
-			rsaKeys := jwtHandler.readPublicKeys()
+			rsaKeys := jwtHandler.ReadPublicKeys()
 			var err error
 			for _, rsaKey := range rsaKeys {
 				token, errParse := jwtHandler.ParseFunc(jwtToken, func(token *jwt.Token) (interface{}, error) {

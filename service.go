@@ -24,7 +24,7 @@ func CreateJwtHandler(openIDProviderEndpoint string) (JwtHandler, error) {
 }
 
 //
-func (jwtHandler *JwtHandler) readPublicKeys() []rsa.PublicKey {
+func (jwtHandler *JwtHandler) ReadPublicKeys() []rsa.PublicKey {
 	jwks, err := jwtHandler.readJwks()
 	if err != nil {
 		log.Printf("could not read jwks: %v", err)
