@@ -2,17 +2,17 @@ package jwtauthhandler
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
-func (jwtHanlder *JwtHandler) readJwks() (jwks, error) {
+func (jwtHandler *JwtHandler) readJwks() (jwks, error) {
 
-	openIDProviderEndpoint := jwtHanlder.OpenIDProviderEndpoint
+	openIDProviderEndpoint := jwtHandler.OpenIDProviderEndpoint
 
 	req, err := http.Get(openIDProviderEndpoint)
 
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 
 	var jwks jwks
 	err = json.Unmarshal(body, &jwks)

@@ -9,7 +9,7 @@ import (
 	"log"
 	"math/big"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // CreateJwtHandler initializes an new JwtHandler and exepts the endpoint of the openIDProvider
@@ -23,7 +23,6 @@ func CreateJwtHandler(openIDProviderEndpoint string) (JwtHandler, error) {
 	}, nil
 }
 
-//
 func (jwtHandler *JwtHandler) ReadPublicKeys() []rsa.PublicKey {
 	jwks, err := jwtHandler.readJwks()
 	if err != nil {

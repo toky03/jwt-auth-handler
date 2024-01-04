@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // AuthMiddleware acts as Middleware which validates an Auth token by validating the signature with the public key from the jwks endpoint
