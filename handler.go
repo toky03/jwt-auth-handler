@@ -15,7 +15,7 @@ func (jwtHandler *JwtHandler) AuthMiddleware(next http.Handler) http.Handler {
 		panic("jwt Handler must be declared before used")
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := strings.Split(r.Header.Get("Authorization"), "Baerer ")
+		authHeader := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 		if len(authHeader) != 2 {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Malformed Token"))

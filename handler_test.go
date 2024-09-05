@@ -28,7 +28,7 @@ func TestJwtHandler_AuthMiddleware(t *testing.T) {
 				next: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.Write([]byte("Works fine"))
 				})},
-			header:    "Baerer xyz.abc.def",
+			header:    "Bearer xyz.abc.def",
 			mockFunc:  createMockFunc{mockFunc: mockjwksResponse},
 			want:      "works fine",
 			errorCode: http.StatusOK,
@@ -38,7 +38,7 @@ func TestJwtHandler_AuthMiddleware(t *testing.T) {
 				next: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					w.Write([]byte("Works fine"))
 				})},
-			header:    "Baerer",
+			header:    "Bearer",
 			mockFunc:  createMockFunc{mockFunc: mockjwksResponse},
 			want:      "works fine",
 			errorCode: http.StatusUnauthorized,
